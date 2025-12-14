@@ -79,7 +79,10 @@ export function ProductDetails({ productId }: ProductDetailsProps) {
             src={product.image}
             alt={product.name}
             fill
+            sizes="(max-width: 768px) 100vw, 50vw"
             className="object-cover"
+            priority
+            quality={80}
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-gray-400">
@@ -98,9 +101,13 @@ export function ProductDetails({ productId }: ProductDetailsProps) {
           </span>
         </div>
 
-        <p className="text-gray-600 mb-6 leading-relaxed">
-          {product.description}
-        </p>
+        {/* About This Product */}
+        <div className="mb-8 p-6 bg-gradient-to-r from-pink-50 to-rose-50 rounded-lg border border-pink-100">
+          <h2 className="text-xl font-bold mb-3 text-gray-800">About This Product</h2>
+          <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
+            {product.description}
+          </p>
+        </div>
 
         {/* Quantity Selector */}
         <div className="mb-6 flex items-center gap-4">
@@ -141,7 +148,7 @@ export function ProductDetails({ productId }: ProductDetailsProps) {
                 : 'btn-primary'
             }`}
           >
-            {showAdded ? '✓ Added to Cart' : 'Add to Cart'}
+            {showAdded ? 'Added to Cart' : 'Add to Cart'}
           </button>
           <button
             onClick={handleOrderOnWhatsApp}
@@ -153,9 +160,9 @@ export function ProductDetails({ productId }: ProductDetailsProps) {
 
         {/* Additional Info */}
         <div className="border-t pt-6 text-sm text-gray-600">
-          <p>✓ Quality Guaranteed</p>
-          <p>✓ Fast Delivery Available</p>
-          <p>✓ Customer Support via WhatsApp</p>
+          <p>Quality Guaranteed</p>
+          <p>Fast Delivery Available</p>
+          <p>Customer Support via WhatsApp</p>
         </div>
       </div>
     </div>

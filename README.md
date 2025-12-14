@@ -1,35 +1,38 @@
-# TSUK - Premium Cosmetics E-Commerce Store
+# TSUK - Premium Cosmetics E-commerce Platform
 
-A modern, full-stack e-commerce website for selling cosmetics built with Next.js 14+, MongoDB, Prisma, and Tailwind CSS.
+A blazing-fast e-commerce platform built with Next.js 14, optimized for performance and user experience. No database required - uses JSON file storage and ImgBB for images.
 
-## Features
+## ✨ Features
 
-### 🛍️ Customer Features
-- **Modern Homepage** - Hero section with featured products
-- **Product Gallery** - Beautiful grid layout with product cards
-- **Product Details** - Detailed product pages with images and descriptions
-- **Shopping Cart** - Full-featured cart with quantity management
-- **WhatsApp Integration** - Direct order messaging with pre-filled product details
-- **Responsive Design** - Mobile-first, works on all devices
-- **Fast & Optimized** - Image optimization and smooth animations
+### 🛍️ Shopping Features
+- **Modern Homepage** - Hero section with curated products
+- **Product Gallery** - Fast-loading grid with images
+- **Product Details** - Full descriptions, prices, categories
+- **Shopping Cart** - Persistent cart with local storage
+- **WhatsApp Ordering** - One-click order messaging
+- **Fast Performance** - ISR caching, optimized images, code splitting
 
-### 👨‍💼 Admin Features
-- **Secure Login** - NextAuth.js authentication
-- **Product Management** - Add, edit, and delete products
-- **Image Uploads** - Preview images before uploading
-- **Product Dashboard** - View all products and manage inventory
-- **Form Validation** - React Hook Form with Zod validation
+### 👨‍💼 Admin Dashboard
+- **Secure Login** - NextAuth.js authentication  
+- **Product CRUD** - Add, edit, delete products
+- **Image Upload** - ImgBB cloud storage integration
+- **Description Management** - Full product descriptions
+- **Quick Actions** - Fast product management interface
 
 ## Tech Stack
 
-- **Frontend**: Next.js 14+ (App Router), React 18, TypeScript
-- **Styling**: Tailwind CSS, custom animations
-- **Database**: MongoDB with Prisma ORM
-- **Authentication**: NextAuth.js
-- **Forms**: React Hook Form with Zod validation
-- **State Management**: Zustand (cart storage)
-- **Images**: Next.js Image Optimization
-- **API**: REST API routes with Next.js App Router
+**Optimized for Speed & Simplicity:**
+- **Frontend**: Next.js 14, React 18, TypeScript
+- **Styling**: Tailwind CSS (minimal config)
+- **State**: Zustand (lightweight)
+- **Forms**: React Hook Form + Zod
+- **Auth**: NextAuth.js (file-based)
+- **Storage**: JSON files + ImgBB cloud
+
+**Zero dependencies removed:**
+- ❌ Axios (native fetch)
+- ❌ Clsx (Tailwind only)
+- ❌ Tailwind-merge (not needed)
 
 ## Project Structure
 
@@ -54,46 +57,131 @@ tsuk/
 │   │   ├── ProductCard.tsx
 │   │   └── ProductDetails.tsx
 │   ├── lib/
-│   │   ├── prisma.ts
 │   │   ├── store.ts
 │   │   ├── validation.ts
-│   │   └── whatsapp.ts
+│   │   ├── whatsapp.ts
+│   │   └── imgbb.ts
 │   ├── types/
 │   │   └── index.ts
+│   ├── data/
+│   │   └── products.json
 │   └── middleware.ts
-├── prisma/
-│   └── schema.prisma
 ├── public/
 ├── .env.local
-├── next.config.js
+├── next.config.ts
 ├── tailwind.config.js
 └── tsconfig.json
 ```
 
-## Getting Started
+## 🚀 Quick Start
 
 ### Prerequisites
-- Node.js 18+ and npm/yarn/pnpm
-- MongoDB Atlas account or local MongoDB instance
-- NextAuth secret key
+- Node.js 18+
+- ImgBB API key (free)
 
-### Installation
+### Setup (5 minutes)
 
-1. **Clone the repository**
 ```bash
-git clone <repo-url>
-cd tsuk
-```
-
-2. **Install dependencies**
-```bash
+# 1. Install
 npm install
+
+# 2. Configure
+cp .env.example .env.local
+
+# 3. Add ImgBB API key
+# Edit .env.local:
+# NEXT_PUBLIC_IMGBB_API_KEY=your-key-here
+
+# 4. Start
+npm run dev
+
+# 5. Visit http://localhost:3000
 ```
 
-3. **Set up environment variables**
+### Admin Login
+- **URL**: `http://localhost:3000/admin/login`
+- **Email**: `admin@tsuk.com`
+- **Password**: `Admin@123456`
+
+## ⚡ Performance Optimizations
+
+- **ISR (60s revalidation)** - Products cached automatically
+- **Image Optimization** - WebP/AVIF formats, lazy loading
+- **Code Splitting** - Dynamic imports for components
+- **Bundle Minimized** - Removed unused dependencies
+- **Production Ready** - SWC minification, no source maps
+- **HTTP Caching** - Static assets cached 1 year
+
+## 📦 Environment Variables
+
 ```bash
-cp .env.example .env.local
+# Admin credentials
+ADMIN_EMAIL=admin@tsuk.com
+ADMIN_PASSWORD=Admin@123456
+NEXTAUTH_SECRET=your-secret-key-here
+
+# ImgBB (get free key from imgbb.com)
+NEXT_PUBLIC_IMGBB_API_KEY=your-api-key
+
+# WhatsApp
+NEXT_PUBLIC_WHATSAPP_NUMBER=1234567890
+
+# Production (optional)
+NEXTAUTH_URL=https://yourdomain.com
 ```
+
+## 📱 Responsive Design
+
+- ✅ Mobile (320px+)
+- ✅ Tablet (768px+)
+- ✅ Desktop (1024px+)
+
+## 🔌 API Endpoints
+
+```
+GET    /api/products      # All products
+POST   /api/products      # Create product
+GET    /api/products/:id  # Product details
+PUT    /api/products/:id  # Update product
+DELETE /api/products/:id  # Delete product
+```
+
+## 🔒 Security
+
+- NextAuth.js authentication
+- Zod validation on all forms
+- TypeScript type safety
+- Protected admin routes
+- Environment variable protection
+
+## 📊 Scripts
+
+```bash
+npm run dev      # Dev server (http://localhost:3000)
+npm run build    # Production build
+npm start        # Start production server
+npm run lint     # Run linter
+```
+
+## 🚀 Deployment
+
+Deploy to Vercel in 1 click:
+1. Push to GitHub
+2. Connect repo to Vercel
+3. Set environment variables
+4. Deploy!
+
+Works on: Vercel, Netlify, AWS, DigitalOcean, Railway
+
+## 📄 License
+
+MIT - Free for personal and commercial use
+
+---
+
+**Status**: Production Ready ✅  
+**Version**: 2.0 (Optimized)  
+**Last Updated**: December 2024
 
 Edit `.env.local` and add:
 - `DATABASE_URL`: Your MongoDB connection string

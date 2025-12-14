@@ -1,11 +1,21 @@
-export default async function Home() {
-  // Fetch products from JSON file via API
-  const res = await fetch(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/products`, {
-    cache: 'no-store'
-  });
-  const products = res.ok ? await res.json() : [];
+import { Product } from '@/types';
+import { ProductCard } from '@/components/ProductCard';
 
-  const { ProductCard } = await import('@/components/ProductCard');
+export const revalidate = 60; // ISR - revalidate every 60 seconds
+
+async function getProducts(): Promise<Product[]> {
+  try {
+    const res = await fetch(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/products`, {
+      next: { revalidate: 60 } // Cache for 60 seconds
+    });
+    return res.ok ? await res.json() : [];
+  } catch {
+    return [];
+  }
+}
+
+export default async function Home() {
+  const products = await getProducts();
 
   return (
     <div>
@@ -37,7 +47,7 @@ export default async function Home() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {products.map((product) => (
+            {products.map((product: Product) => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>
@@ -49,17 +59,17 @@ export default async function Home() {
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid md:grid-cols-3 gap-8">
             <div className="text-center">
-              <div className="text-4xl mb-4">✨</div>
+              <div className="text-4xl mb-4 text-pink-500">◆</div>
               <h3 className="text-xl font-bold mb-2">Premium Quality</h3>
               <p className="text-gray-600">Only the finest cosmetic products</p>
             </div>
             <div className="text-center">
-              <div className="text-4xl mb-4">🚚</div>
+              <div className="text-4xl mb-4 text-pink-500">◆</div>
               <h3 className="text-xl font-bold mb-2">Fast Delivery</h3>
               <p className="text-gray-600">Order directly via WhatsApp</p>
             </div>
             <div className="text-center">
-              <div className="text-4xl mb-4">💯</div>
+              <div className="text-4xl mb-4 text-pink-500">◆</div>
               <h3 className="text-xl font-bold mb-2">Satisfaction</h3>
               <p className="text-gray-600">100% customer satisfaction</p>
             </div>

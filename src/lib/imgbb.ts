@@ -25,8 +25,8 @@ export async function uploadToImgBB(
   try {
     const response = await fetch('https://api.imgbb.com/1/upload', {
       method: 'POST',
-      body: form,
-      headers: form.getHeaders(),
+      body: form as any,
+      headers: form.getHeaders() as any,
     });
 
     if (!response.ok) {

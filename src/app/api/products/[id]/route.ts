@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import fs from 'fs';
 import path from 'path';
 
@@ -74,6 +75,11 @@ export async function PUT(
 
     saveProducts(products);
 
+    // Revalidate cache for homepage and product page
+    revalidatePath('/');
+    revalidatePath('/products');
+    revalidatePath(`/products/${params.id}`);
+
     return NextResponse.json(products[index]);
   } catch (error: any) {
     console.error('Failed to update product:', error);
@@ -98,6 +104,11 @@ export async function DELETE(
 
     products.splice(index, 1);
     saveProducts(products);
+
+    // Revalidate cache after deletion
+    revalidatePath('/');
+    revalidatePath('/products');
+    revalidatePath(`/products/${params.id}`);
 
     return NextResponse.json({ success: true });
   } catch (error) {

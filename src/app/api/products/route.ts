@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import fs from 'fs';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
@@ -64,6 +65,10 @@ export async function POST(request: NextRequest) {
 
     products.push(newProduct);
     saveProducts(products);
+
+    // Revalidate the homepage to show new product immediately
+    revalidatePath('/');
+    revalidatePath('/products');
 
     return NextResponse.json(newProduct, { status: 201 });
   } catch (error: any) {

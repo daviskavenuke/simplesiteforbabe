@@ -1,16 +1,14 @@
 /** @type {import('tailwindcss').Config} */
 const config = {
   content: [
-    './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/components/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/app/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
     extend: {
       colors: {
-        primary: '#ec4899', // pink-500
-        secondary: '#64748b', // slate-500
-        accent: '#f472b6', // pink-400
+        primary: '#ec4899',
+        secondary: '#64748b',
+        accent: '#f472b6',
       },
       animation: {
         fadeIn: 'fadeIn 0.5s ease-in-out',

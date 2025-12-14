@@ -64,7 +64,7 @@ export function ProductCard({ product }: ProductCardProps) {
                 : 'btn-primary'
             }`}
           >
-            {showAdded ? '✓ Added' : 'Add to Cart'}
+            {showAdded ? 'Added' : 'Add to Cart'}
           </button>
         </div>
       </div>

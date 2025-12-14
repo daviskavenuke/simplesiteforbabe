@@ -9,6 +9,9 @@ import { ProductSchema } from '@/lib/validation';
 import { Product } from '@/types';
 import Image from 'next/image';
 
+// Disable static generation for admin dashboard
+export const dynamic = 'force-dynamic';
+
 type ProductFormData = {
   name: string;
   description: string;
