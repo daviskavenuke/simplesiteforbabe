@@ -16,7 +16,7 @@ export function Navbar() {
     <nav className="bg-white shadow-md sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
         <Link href="/" className="text-2xl font-bold text-pink-500">
-          TSUK
+          RK Glow
         </Link>
         <div className="flex gap-6 items-center">
           <Link href="/" className="text-gray-600 hover:text-pink-500 transition">

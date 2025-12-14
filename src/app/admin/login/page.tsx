@@ -51,7 +51,7 @@ export default function AdminLoginPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-400 to-rose-500 flex items-center justify-center px-4">
       <div className="bg-white rounded-lg shadow-xl p-8 w-full max-w-md">
-        <h1 className="text-3xl font-bold text-center mb-2 text-gray-800">TSUK Admin</h1>
+        <h1 className="text-3xl font-bold text-center mb-2 text-gray-800">RK Glow Admin</h1>
         <p className="text-center text-gray-600 mb-8">Login to manage products</p>
 
         {error && (

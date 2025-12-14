@@ -1,4 +1,4 @@
-# TSUK - Premium Cosmetics E-commerce Platform
+# RK Glow - Premium Cosmetics E-commerce Platform
 
 A blazing-fast e-commerce platform built with Next.js 14, optimized for performance and user experience. No database required - uses JSON file storage and ImgBB for images.
 

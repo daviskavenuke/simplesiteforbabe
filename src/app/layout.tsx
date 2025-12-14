@@ -3,7 +3,7 @@ import './globals.css';
 import { Navbar } from '@/components/Navbar';
 
 export const metadata: Metadata = {
-  title: 'TSUK - Premium Cosmetics',
+  title: 'RK Glow - Premium Cosmetics',
   description: 'Discover premium cosmetics products. Shop now!',
 };
 
