@@ -1,0 +1,58 @@
+{
+  "products": [
+    {
+      "id": "prod_1",
+      "name": "Vitamin C Brightening Serum",
+      "description": "Transform your skin with our potent Vitamin C serum. Reduces dark spots, evens skin tone, and boosts radiance. Lightweight formula absorbs quickly without sticky residue.",
+      "price": 2500,
+      "category": "Serums",
+      "image": "https://via.placeholder.com/400x400?text=Vitamin+C+Serum",
+      "createdAt": "2024-01-15T10:00:00Z"
+    },
+    {
+      "id": "prod_2",
+      "name": "Hydrating Face Moisturizer",
+      "description": "Deeply hydrate and nourish your skin with this rich moisturizer. Contains hyaluronic acid and ceramides for all-day hydration. Suitable for all skin types.",
+      "price": 1800,
+      "category": "Moisturizers",
+      "image": "https://via.placeholder.com/400x400?text=Moisturizer",
+      "createdAt": "2024-01-15T10:05:00Z"
+    },
+    {
+      "id": "prod_3",
+      "name": "Rose Hip Oil",
+      "description": "Pure, cold-pressed Rose Hip Oil rich in vitamins A and C. Perfect for reducing scars, aging signs, and uneven skin tone. Works on face and body.",
+      "price": 3000,
+      "category": "Oils",
+      "image": "https://via.placeholder.com/400x400?text=Rose+Hip+Oil",
+      "createdAt": "2024-01-15T10:10:00Z"
+    },
+    {
+      "id": "prod_4",
+      "name": "Charcoal Face Mask",
+      "description": "Deep cleansing charcoal mask that removes impurities and unclogs pores. Leave on for 10-15 minutes for glowing, clear skin. Great for oily and acne-prone skin.",
+      "price": 1500,
+      "category": "Masks",
+      "image": "https://via.placeholder.com/400x400?text=Charcoal+Mask",
+      "createdAt": "2024-01-15T10:15:00Z"
+    },
+    {
+      "id": "prod_5",
+      "name": "Retinol Night Cream",
+      "description": "Advanced retinol formula that reduces wrinkles and fine lines while you sleep. Promotes skin renewal and boosts collagen. Use at night for best results.",
+      "price": 4500,
+      "category": "Night Creams",
+      "image": "https://via.placeholder.com/400x400?text=Retinol+Cream",
+      "createdAt": "2024-01-15T10:20:00Z"
+    },
+    {
+      "id": "prod_6",
+      "name": "Sunscreen SPF 50",
+      "description": "Broad-spectrum protection with SPF 50. Lightweight, non-greasy formula. Provides UVA and UVB protection. Perfect for daily use.",
+      "price": 2000,
+      "category": "Sun Care",
+      "image": "https://via.placeholder.com/400x400?text=Sunscreen+SPF50",
+      "createdAt": "2024-01-15T10:25:00Z"
+    }
+  ]
+}

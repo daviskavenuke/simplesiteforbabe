@@ -1,0 +1,70 @@
+import FormData from 'form-data';
+import fs from 'fs';
+import path from 'path';
+
+/**
+ * Upload image to ImgBB and return the URL
+ * @param fileBuffer - The file buffer from the form
+ * @param fileName - The name of the file
+ * @returns Promise with the image URL from ImgBB
+ */
+export async function uploadToImgBB(
+  fileBuffer: Buffer,
+  fileName: string
+): Promise<string> {
+  const apiKey = process.env.NEXT_PUBLIC_IMGBB_API_KEY;
+
+  if (!apiKey) {
+    throw new Error('ImgBB API key is not configured');
+  }
+
+  const form = new FormData();
+  form.append('image', fileBuffer, fileName);
+  form.append('key', apiKey);
+
+  try {
+    const response = await fetch('https://api.imgbb.com/1/upload', {
+      method: 'POST',
+      body: form,
+      headers: form.getHeaders(),
+    });
+
+    if (!response.ok) {
+      throw new Error(`ImgBB upload failed: ${response.statusText}`);
+    }
+
+    const data = await response.json() as any;
+
+    if (data.success) {
+      return data.data.url;
+    } else {
+      throw new Error('ImgBB upload failed: API returned success=false');
+    }
+  } catch (error) {
+    console.error('ImgBB upload error:', error);
+    throw error;
+  }
+}
+
+/**
+ * Validate image file
+ * @param fileBuffer - The file buffer
+ * @param fileName - The file name
+ * @returns true if valid, throws error if invalid
+ */
+export function validateImageFile(fileBuffer: Buffer, fileName: string): boolean {
+  const maxSize = 32 * 1024 * 1024; // 32MB limit
+  const validExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
+
+  const ext = path.extname(fileName).toLowerCase();
+
+  if (!validExtensions.includes(ext)) {
+    throw new Error(`Invalid file type. Allowed: ${validExtensions.join(', ')}`);
+  }
+
+  if (fileBuffer.length > maxSize) {
+    throw new Error(`File size exceeds ${maxSize / 1024 / 1024}MB limit`);
+  }
+
+  return true;
+}
