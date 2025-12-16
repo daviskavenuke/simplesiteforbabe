@@ -45,7 +45,7 @@ export function ProductDetails({ productId }: ProductDetailsProps) {
 
   const handleOrderOnWhatsApp = () => {
     if (product) {
-      const message = `Hi! I'm interested in:\n\n📦 *${product.name}*\n💰 Price: $${product.price.toFixed(2)}\nQuantity: ${quantity}\n\nPlease let me know more details!`;
+      const message = `Hi! I'm interested in:\n\n📦 *${product.name}*\n💰 Price: TSh ${product.price.toLocaleString()}\nQuantity: ${quantity}\n\nPlease let me know more details!`;
       const whatsappUrl = generateWhatsAppUrl(
         process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '1234567890',
         message
@@ -97,7 +97,7 @@ export function ProductDetails({ productId }: ProductDetailsProps) {
         <h1 className="text-4xl font-bold mt-4 mb-2">{product.name}</h1>
         <div className="flex items-baseline gap-2 mb-6">
           <span className="text-4xl font-bold text-pink-500">
-            ${product.price.toFixed(2)}
+            TSh {product.price.toLocaleString()}
           </span>
         </div>
 
@@ -154,7 +154,7 @@ export function ProductDetails({ productId }: ProductDetailsProps) {
             onClick={handleOrderOnWhatsApp}
             className="flex-1 bg-green-500 text-white py-3 rounded-lg font-bold hover:bg-green-600 transition-colors duration-300 flex items-center justify-center gap-2"
           >
-            📱 Order on WhatsApp
+            Order on WhatsApp
           </button>
         </div>
 

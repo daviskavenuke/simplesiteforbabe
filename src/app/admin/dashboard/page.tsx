@@ -8,6 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { ProductSchema } from '@/lib/validation';
 import { Product } from '@/types';
 import Image from 'next/image';
+import { uploadImageToImgBB } from '@/lib/imgbb';
 
 // Disable static generation for admin dashboard
 export const dynamic = 'force-dynamic';
@@ -28,6 +29,13 @@ export default function AdminDashboard() {
   const [isEditing, setIsEditing] = useState<string | null>(null);
   const [imagePreview, setImagePreview] = useState('');
   const [apiError, setApiError] = useState('');
+  const [categories, setCategories] = useState<string[]>([]);
+  const [showNewCategoryInput, setShowNewCategoryInput] = useState(false);
+  const [newCategory, setNewCategory] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const [mostLoved, setMostLoved] = useState<Product[]>([]);
+  const [mostOrdered, setMostOrdered] = useState<Product[]>([]);
+  const [uploading, setUploading] = useState(false);
 
   const {
     register,
@@ -53,6 +61,17 @@ export default function AdminDashboard() {
       if (response.ok) {
         const data = await response.json();
         setProducts(data);
+        // Extract unique categories
+        const uniqueCategories = Array.from(new Set(data.map((p: Product) => p.category)));
+        setCategories(uniqueCategories as string[]);
+      }
+
+      // Fetch analytics
+      const analyticsResponse = await fetch('/api/products/analytics');
+      if (analyticsResponse.ok) {
+        const analyticsData = await analyticsResponse.json();
+        setMostLoved(analyticsData.mostLoved);
+        setMostOrdered(analyticsData.mostOrdered);
       }
     } catch (error) {
       console.error('Failed to fetch products:', error);
@@ -108,27 +127,47 @@ export default function AdminDashboard() {
     setValue('category', product.category);
     setValue('image', product.image);
     setImagePreview(product.image);
+    setSelectedCategory(product.category);
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // For demo, we'll just use the file name. In production, upload to Cloudinary or your service
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const dataUrl = event.target?.result as string;
-        setImagePreview(dataUrl);
-        setValue('image', dataUrl);
-      };
-      reader.readAsDataURL(file);
+      setUploading(true);
+      try {
+        // Show preview immediately
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const dataUrl = event.target?.result as string;
+          setImagePreview(dataUrl);
+        };
+        reader.readAsDataURL(file);
+
+        // Upload to ImgBB
+        const imgbbUrl = await uploadImageToImgBB(file);
+        setValue('image', imgbbUrl);
+      } catch (error: any) {
+        setApiError('Failed to upload image: ' + (error.message || 'Unknown error'));
+      } finally {
+        setUploading(false);
+      }
     }
   };
 
-  const handleCancel = () => {
-    setIsEditing(null);
-    reset();
-    setImagePreview('');
-    setApiError('');
+  const handleAddCategory = () => {
+    if (newCategory.trim() && !categories.includes(newCategory.trim())) {
+      const updatedCategories = [...categories, newCategory.trim()];
+      setCategories(updatedCategories);
+      setSelectedCategory(newCategory.trim());
+      setValue('category', newCategory.trim());
+      setNewCategory('');
+      setShowNewCategoryInput(false);
+    }
+  };
+
+  const handleSelectCategory = (category: string) => {
+    setSelectedCategory(category);
+    setValue('category', category);
   };
 
   if (status === 'loading' || loading) {
@@ -147,9 +186,20 @@ export default function AdminDashboard() {
     <div className="max-w-7xl mx-auto px-4 py-12">
       {/* Header */}
       <div className="flex justify-between items-center mb-8">
-        <div>
-          <h1 className="text-4xl font-bold">Admin Dashboard</h1>
-          <p className="text-gray-600">Welcome, {session.user?.email}</p>
+        <div className="flex items-center gap-4">
+          <Image
+            src="https://i.ibb.co/s9W88Z6p/Chat-GPT-Image-Dec-16-2025-03-05-07-PM.png"
+            alt="RK Glow Logo"
+            width={70}
+            height={70}
+            className="object-contain"
+            priority
+          />
+          <div>
+            <h1 className="text-4xl font-bold">Admin Dashboard</h1>
+            <p className="text-gray-600">Welcome, {session.user?.email}</p>
+          </div>
+        </div>
         </div>
         <button
           onClick={() => signOut({ redirect: true, callbackUrl: '/' })}
@@ -157,6 +207,71 @@ export default function AdminDashboard() {
         >
           Logout
         </button>
+      </div>
+
+      {/* Analytics Section */}
+      <div className="grid md:grid-cols-2 gap-8 mb-8">
+        {/* Most Loved Products */}
+        <div className="card p-6">
+          <h2 className="text-2xl font-bold mb-4 text-purple-600">❤️ Most Loved</h2>
+          <p className="text-sm text-gray-600 mb-4">Products with most wishlist adds</p>
+          {mostLoved.length === 0 ? (
+            <div className="text-center py-8 text-gray-500">
+              No liked products yet
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {mostLoved.map((product, index) => (
+                <div key={product.id} className="flex items-start justify-between border-b pb-3">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg font-bold text-purple-500">#{index + 1}</span>
+                      <div>
+                        <h3 className="font-semibold text-sm">{product.name}</h3>
+                        <p className="text-xs text-gray-500">{product.category}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-2xl font-bold text-purple-500">{product.likes || 0}</p>
+                    <p className="text-xs text-gray-600">likes</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Most Ordered Products */}
+        <div className="card p-6">
+          <h2 className="text-2xl font-bold mb-4 text-blue-600">🛍️ Most Ordered</h2>
+          <p className="text-sm text-gray-600 mb-4">Products ordered most via WhatsApp</p>
+          {mostOrdered.length === 0 ? (
+            <div className="text-center py-8 text-gray-500">
+              No orders yet
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {mostOrdered.map((product, index) => (
+                <div key={product.id} className="flex items-start justify-between border-b pb-3">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg font-bold text-blue-500">#{index + 1}</span>
+                      <div>
+                        <h3 className="font-semibold text-sm">{product.name}</h3>
+                        <p className="text-xs text-gray-500">{product.category}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-2xl font-bold text-blue-500">{product.orders || 0}</p>
+                    <p className="text-xs text-gray-600">orders</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       <div className="grid lg:grid-cols-3 gap-8">
@@ -187,19 +302,62 @@ export default function AdminDashboard() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold mb-1">Category</label>
-                <input
-                  placeholder="e.g., Skincare, Makeup"
-                  className="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-pink-500 focus:outline-none"
-                  {...register('category')}
-                />
-                {errors.category && (
-                  <p className="text-red-500 text-xs mt-1">{errors.category.message}</p>
-                )}
+                <label className="block text-sm font-semibold mb-3">Category</label>
+                <div className="space-y-3">
+                  {/* Category Buttons */}
+                  <div className="flex flex-wrap gap-2 mb-3">
+                    {categories.map((category) => (
+                      <button
+                        key={category}
+                        type="button"
+                        onClick={() => handleSelectCategory(category)}
+                        className={`px-4 py-2 rounded-full text-sm font-medium transition ${
+                          selectedCategory === category
+                            ? 'bg-purple-500 text-white'
+                            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                        }`}
+                      >
+                        {category}
+                      </button>
+                    ))}
+                    {/* Add Category Button */}
+                    <button
+                      type="button"
+                      onClick={() => setShowNewCategoryInput(!showNewCategoryInput)}
+                      className="px-4 py-2 rounded-full text-sm font-medium bg-gray-200 text-gray-700 hover:bg-gray-300 transition flex items-center gap-1"
+                    >
+                      <span className="text-lg">+</span> Add
+                    </button>
+                  </div>
+
+                  {/* New Category Input */}
+                  {showNewCategoryInput && (
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        placeholder="Enter category name"
+                        value={newCategory}
+                        onChange={(e) => setNewCategory(e.target.value)}
+                        className="flex-1 px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-purple-500 focus:outline-none text-sm"
+                      />
+                      <button
+                        type="button"
+                        onClick={handleAddCategory}
+                        className="px-3 py-2 bg-purple-500 text-white rounded hover:bg-purple-600 transition text-sm font-medium"
+                      >
+                        Add
+                      </button>
+                    </div>
+                  )}
+
+                  {!selectedCategory && (
+                    <p className="text-red-500 text-xs">Please select or create a category</p>
+                  )}
+                </div>
               </div>
 
               <div>
-                <label className="block text-sm font-semibold mb-1">Price ($)</label>
+                <label className="block text-sm font-semibold mb-1">Price (TSh)</label>
                 <input
                   type="number"
                   step="0.01"
@@ -231,8 +389,12 @@ export default function AdminDashboard() {
                   type="file"
                   accept="image/*"
                   onChange={handleImageChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-pink-500 focus:outline-none"
+                  disabled={uploading}
+                  className="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-pink-500 focus:outline-none disabled:opacity-50"
                 />
+                {uploading && (
+                  <p className="text-sm text-blue-600 mt-1">Uploading image to ImgBB...</p>
+                )}
                 {imagePreview && (
                   <div className="mt-2 relative w-20 h-20">
                     <Image
@@ -296,7 +458,7 @@ export default function AdminDashboard() {
                   <div className="flex-1">
                     <h3 className="font-bold text-lg">{product.name}</h3>
                     <p className="text-sm text-gray-600">{product.category}</p>
-                    <p className="text-pink-500 font-bold">${product.price.toFixed(2)}</p>
+                    <p className="text-pink-500 font-bold">TSh {product.price.toLocaleString()}</p>
                   </div>
 
                   <div className="flex gap-2 flex-col">

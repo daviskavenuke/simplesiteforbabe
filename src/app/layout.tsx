@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { Navbar } from '@/components/Navbar';
+import { MobileBottomNav } from '@/components/MobileBottomNav';
 
 export const metadata: Metadata = {
   title: 'RK Glow - Premium Cosmetics',
@@ -16,9 +17,10 @@ export default function RootLayout({
     <html lang="en">
       <body className="bg-gray-50">
         <Navbar />
-        <main className="min-h-screen">
+        <main className="min-h-screen pb-20 md:pb-0">
           {children}
         </main>
+        <MobileBottomNav />
       </body>
     </html>
   );

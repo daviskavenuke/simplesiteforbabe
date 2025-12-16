@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { CartItem, Product } from '@/types';
+import { CartItem, Product, WishlistItem } from '@/types';
 
 interface CartStore {
   items: CartItem[];
@@ -9,6 +9,14 @@ interface CartStore {
   clearCart: () => void;
   getTotalPrice: () => number;
   getTotalItems: () => number;
+}
+
+interface WishlistStore {
+  items: WishlistItem[];
+  addToWishlist: (product: Product) => void;
+  removeFromWishlist: (productId: string) => void;
+  isInWishlist: (productId: string) => boolean;
+  getTotalWishlistItems: () => number;
 }
 
 export const useCartStore = create<CartStore>((set, get) => ({
@@ -69,4 +77,36 @@ export const useCartStore = create<CartStore>((set, get) => ({
     get().items.reduce((total, item) => total + item.price * item.quantity, 0),
 
   getTotalItems: () => get().items.reduce((total, item) => total + item.quantity, 0),
+}));
+
+export const useWishlistStore = create<WishlistStore>((set, get) => ({
+  items: typeof window !== 'undefined' 
+    ? JSON.parse(localStorage.getItem('wishlist') || '[]') 
+    : [],
+
+  addToWishlist: (product: Product) =>
+    set((state) => {
+      const exists = state.items.some((item) => item.id === product.id);
+      if (exists) return { items: state.items };
+
+      const updatedItems = [...state.items, product];
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('wishlist', JSON.stringify(updatedItems));
+      }
+      return { items: updatedItems };
+    }),
+
+  removeFromWishlist: (productId: string) =>
+    set((state) => {
+      const updatedItems = state.items.filter((item) => item.id !== productId);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('wishlist', JSON.stringify(updatedItems));
+      }
+      return { items: updatedItems };
+    }),
+
+  isInWishlist: (productId: string) =>
+    get().items.some((item) => item.id === productId),
+
+  getTotalWishlistItems: () => get().items.length,
 }));

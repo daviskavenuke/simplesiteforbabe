@@ -72,7 +72,7 @@ export default function CartPage() {
 
                 <div className="flex-1">
                   <h3 className="text-lg font-bold">{item.name}</h3>
-                  <p className="text-gray-600 text-sm mb-2">${item.price.toFixed(2)} each</p>
+                  <p className="text-gray-600 text-sm mb-2">TSh {item.price.toLocaleString()} each</p>
                   
                   <div className="flex items-center gap-2 mb-2">
                     <label className="text-sm font-semibold">Qty:</label>
@@ -91,7 +91,7 @@ export default function CartPage() {
                   </div>
 
                   <p className="font-bold">
-                    Subtotal: ${(item.price * item.quantity).toFixed(2)}
+                    Subtotal: TSh {((item.price * item.quantity)).toLocaleString()}
                   </p>
                 </div>
 
@@ -114,7 +114,7 @@ export default function CartPage() {
             <div className="mb-6 space-y-2">
               <div className="flex justify-between">
                 <span>Subtotal:</span>
-                <span className="font-semibold">${getTotalPrice().toFixed(2)}</span>
+                <span className="font-semibold">TSh {getTotalPrice().toLocaleString()}</span>
               </div>
               <div className="flex justify-between text-green-600">
                 <span>Shipping:</span>
@@ -122,7 +122,7 @@ export default function CartPage() {
               </div>
               <div className="border-t pt-4 flex justify-between text-xl font-bold">
                 <span>Total:</span>
-                <span className="text-pink-500">${getTotalPrice().toFixed(2)}</span>
+                <span className="text-pink-500">TSh {getTotalPrice().toLocaleString()}</span>
               </div>
             </div>
 
@@ -130,7 +130,7 @@ export default function CartPage() {
               onClick={handleOrderOnWhatsApp}
               className="w-full bg-green-500 text-white py-3 rounded-lg font-bold hover:bg-green-600 transition mb-3 flex items-center justify-center gap-2"
             >
-              📱 Order All on WhatsApp
+              Order All on WhatsApp
             </button>
 
             <Link href="/" className="block w-full btn-secondary text-center py-3">
